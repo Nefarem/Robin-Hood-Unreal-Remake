@@ -13,5 +13,8 @@ UCLASS()
 class ROBIN_HOOD_API ARobinHoodGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	ARobinHoodGameMode();
 	
 };

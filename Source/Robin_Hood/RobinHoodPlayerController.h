@@ -11,7 +11,12 @@ class ROBIN_HOOD_API ARobinHoodPlayerController : public APlayerController
 
 public:
 	ARobinHoodPlayerController();
-
+	
+	virtual void Tick(float DeltaTime) override;
+	
 protected:
 	virtual void SetupInputComponent() override;
+
+private:
+	void SendPawnsToClickedPoint();
 };

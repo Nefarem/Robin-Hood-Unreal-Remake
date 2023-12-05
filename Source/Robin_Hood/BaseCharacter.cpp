@@ -1,8 +1,27 @@
 #include "BaseCharacter.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
+
+ABaseCharacter::ABaseCharacter()
+{
+	PrimaryActorTick.bCanEverTick = true;
+
+	FloatingPawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("UFloatingPawnMovement"));
+}
+
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	ConfigureCharacterMovement();
+}
+
+void ABaseCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Move();
+}
 
 void ABaseCharacter::ConfigureCharacterMovement()
 {
@@ -14,56 +33,27 @@ void ABaseCharacter::ConfigureCharacterMovement()
 	CharacterMovementComponent->bSnapToPlaneAtStart = true;
 }
 
-ABaseCharacter::ABaseCharacter()
+void ABaseCharacter::MoveToClickedPoint(FVector Location)
 {
-	PrimaryActorTick.bCanEverTick = true;
+	TargetLocation = Location;
+	CanMove = true;
+}
+
+void ABaseCharacter::Move()
+{
+	const float DistanceThreshold = 93.0f;
 	
-	ConfigureCharacterMovement();
-	CreateSpringCamera();
-}
+	if (!CanMove) return;
 
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
+	FVector ActorLocation = GetActorLocation();
+	FVector DirectionVector = (TargetLocation - ActorLocation).GetSafeNormal();
 	
-}
-
-void ABaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAction(TEXT("Move"), IE_Pressed, this, &ABaseCharacter::MoveToClickedPoint);
-}
-
-void ABaseCharacter::CreateSpringCamera()
-{
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->SetUsingAbsoluteRotation(true);
-	SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
-
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
-	CameraComponent->bUsePawnControlRotation = false;
-}
-
-void ABaseCharacter::MoveToClickedPoint()
-{
-	APlayerController* PlayerController = Cast<APlayerController>(Controller);
-
-	if (PlayerController == nullptr) return;
+	FloatingPawnMovementComponent->AddInputVector(DirectionVector);
 	
-	FHitResult HitResult;
-
-	if (PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+	if (FVector::Dist(ActorLocation, TargetLocation) <= DistanceThreshold)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Click location: %s"), *HitResult.Location.ToString());
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(PlayerController, HitResult.Location);
+		CanMove = false;
+		FloatingPawnMovementComponent->StopMovementImmediately();
 	}
 }
+

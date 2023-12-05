@@ -19,19 +19,16 @@ protected:
 	float Stamina = 100.0f;
 
 private:
-	void MoveToClickedPoint();
-	void CreateSpringCamera();
 	void ConfigureCharacterMovement();
-
-	// Todo: Temporary implementation, in future camera will no spring to player character, but player can move camera on whole map
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* SpringArmComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComponent;
+	void Move();
 	
-public:	
+	class UFloatingPawnMovement* FloatingPawnMovementComponent;
+
+	FVector TargetLocation;
+	bool CanMove;
+	
+public:
 	virtual void Tick(float DeltaTime) override;
-	
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	void MoveToClickedPoint(FVector Location);
 };

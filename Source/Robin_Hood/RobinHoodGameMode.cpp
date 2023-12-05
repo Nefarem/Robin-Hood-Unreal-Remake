@@ -3,3 +3,7 @@
 
 #include "RobinHoodGameMode.h"
 
+ARobinHoodGameMode::ARobinHoodGameMode()
+{
+	
+}
