@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RobinHoodHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "RobinHoodPlayerController.generated.h"
 
@@ -11,12 +12,21 @@ class ROBIN_HOOD_API ARobinHoodPlayerController : public APlayerController
 
 public:
 	ARobinHoodPlayerController();
-	
+	FVector2d GetMousePos2D();
+
 	virtual void Tick(float DeltaTime) override;
-	
+
 protected:
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
 private:
-	void SendPawnsToClickedPoint();
+	ARobinHoodHUD* HUD;
+
+	TArray<ABaseCharacter*> PreviousSelectedCharacters;
+	
+	void SelectionPressed();
+	void SelectionReleased();
+	void ShowSelectionIndicators();
+	void MoveSelectedPawnsToClickedPoint();
 };

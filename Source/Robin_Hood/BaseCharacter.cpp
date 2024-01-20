@@ -1,18 +1,25 @@
 #include "BaseCharacter.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "PaperSpriteComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	FloatingPawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("UFloatingPawnMovement"));
+
+	SelectionSpriteComponent = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SelectionSprite"));
+	SelectionSpriteComponent->SetupAttachment(RootComponent);
+	
+	ToggleSelect(false);
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	ConfigureCharacterMovement();
 }
 
@@ -41,7 +48,7 @@ void ABaseCharacter::MoveToClickedPoint(FVector Location)
 
 void ABaseCharacter::Move()
 {
-	const float DistanceThreshold = 93.0f;
+	constexpr float DistanceThreshold = 93.0f;
 	
 	if (!CanMove) return;
 
@@ -56,4 +63,10 @@ void ABaseCharacter::Move()
 		FloatingPawnMovementComponent->StopMovementImmediately();
 	}
 }
+
+void ABaseCharacter::ToggleSelect(bool Value)
+{
+	SelectionSpriteComponent->SetVisibility(Value);
+}
+
 
