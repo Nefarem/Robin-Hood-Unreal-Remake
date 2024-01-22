@@ -15,6 +15,7 @@ void AMoveableCamera::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	SetCameraRotation();
 }
 
 void AMoveableCamera::Tick(float DeltaTime)
@@ -33,6 +34,16 @@ void AMoveableCamera::CreateCameraComponent()
 {
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(RootComponent);
+}
+
+void AMoveableCamera::SetCameraRotation()
+{
+	FRotator BeginRotation;
+	BeginRotation.Pitch = 315.0f;
+	BeginRotation.Yaw = 270.0f;
+	BeginRotation.Roll = 0.0f;
+	
+	SetActorRotation(BeginRotation);
 }
 
 FVector2d AMoveableCamera::GetMoveDirection()

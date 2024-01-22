@@ -25,10 +25,7 @@ protected:
 	
 	float Health = 100.0f;
 	float Stamina = 100.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<ASelectionBox> SelectionBoxClass;
-
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UPaperSprite* SelectionSprite;
 
