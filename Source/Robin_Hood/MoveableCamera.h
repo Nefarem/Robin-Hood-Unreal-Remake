@@ -20,11 +20,11 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category="Camera")
-	float EdgeOffset = 60.0f;
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float EdgeOffset = 30.0f;
 
-	UPROPERTY(VisibleAnywhere, Category="Camera")
-	float MoveSpeed = 400.0f;
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float MoveSpeed = 600.0f;
 
 	
 	FVector2d GetMoveDirection();
@@ -32,6 +32,7 @@ private:
 	bool IsCursorOverGameViewport();
 	
 	void CreateCameraComponent();
+	void SetCameraRotation();
 	void MoveCamera(const FVector2d& DirectionVector);
 
 	class APlayerController* PlayerController;
