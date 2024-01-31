@@ -26,6 +26,11 @@ private:
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float MoveSpeed = 600.0f;
 
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float MaxZoom = 110.0f;
+
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float MinZoom = 35.0f;
 	
 	FVector2d GetMoveDirection();
 
@@ -33,6 +38,7 @@ private:
 	
 	void CreateCameraComponent();
 	void SetCameraRotation();
+	void ChangeZoom(float InputValue);
 	void MoveCamera(const FVector2d& DirectionVector);
 
 	class APlayerController* PlayerController;

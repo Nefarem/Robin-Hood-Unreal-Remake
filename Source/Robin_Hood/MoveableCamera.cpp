@@ -15,6 +15,7 @@ void AMoveableCamera::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	
 	SetCameraRotation();
 }
 
@@ -28,6 +29,8 @@ void AMoveableCamera::Tick(float DeltaTime)
 void AMoveableCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis("CameraZoomIn", this, &AMoveableCamera::ChangeZoom);
 }
 
 void AMoveableCamera::CreateCameraComponent()
@@ -44,6 +47,21 @@ void AMoveableCamera::SetCameraRotation()
 	BeginRotation.Roll = 0.0f;
 	
 	SetActorRotation(BeginRotation);
+}
+
+void AMoveableCamera::ChangeZoom(float InputValue)
+{
+	CameraComponent->SetFieldOfView(CameraComponent->FieldOfView + InputValue);
+
+	if (CameraComponent->FieldOfView > MaxZoom)
+	{
+		CameraComponent->SetFieldOfView(MaxZoom);
+	}
+
+	if (CameraComponent->FieldOfView < MinZoom)
+	{
+		CameraComponent->SetFieldOfView(MinZoom);
+	}
 }
 
 FVector2d AMoveableCamera::GetMoveDirection()
